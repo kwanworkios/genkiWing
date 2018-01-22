@@ -1,3 +1,13 @@
+import { FlurryAnalytics } from '@ionic-native/flurry-analytics';
+import { Badge } from '@ionic-native/badge';
+import { StartupService } from './../services/startup.service';
+import { StoreService } from '../framework/services/store.service';
+import { PaymentService } from '../framework/services/payment.service';
+import { OrderService } from '../framework/services/order.service';
+import { MemberService } from '../framework/services/member.service';
+import { Keyboard } from '@ionic-native/keyboard';
+import { AppVersion } from '@ionic-native/app-version';
+import { HockeyApp } from 'ionic-hockeyapp';
 import { Deeplinks } from '@ionic-native/deeplinks';
 import { Firebase } from '@ionic-native/firebase';
 import { GoogleAnalytics } from '@ionic-native/google-analytics';
@@ -17,7 +27,6 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { IonicStorageModule } from '@ionic/storage';
 import { GoogleMapsLoader } from '../services/map-loader.service';
-import { StartupService } from '../services/startup.service';
 import { ThemeableBrowser } from '@ionic-native/themeable-browser';
 import { ThemeableBrowserService } from '../services/themeableBrowser.service';
 
@@ -42,7 +51,17 @@ export function createTranslateLoader(http: Http) {
     BrowserModule,
     HttpModule,
     IonicModule.forRoot(MyApp, {
-      
+      mode: "ios",
+      backButtonText: '',
+      platforms: {
+        ios: {
+          pageTransition: 'ios-transition',
+        },
+        android: {
+          pageTransition: 'md-transition',
+        }
+      },
+      NavController
     }),
   ],
   bootstrap: [IonicApp],
@@ -51,6 +70,7 @@ export function createTranslateLoader(http: Http) {
     HomePage,
   ],
   providers: [
+    Badge,
     StatusBar,
     SplashScreen,
     ConfigService,
@@ -62,7 +82,16 @@ export function createTranslateLoader(http: Http) {
     Deeplinks,
     ThemeableBrowser,
     ThemeableBrowserService,
+    AppVersion,
     StartupService,
+    HockeyApp,
+    Keyboard,
+    MemberService,
+    OrderService,
+    PaymentService,
+    StoreService,
+    StartupService,
+    FlurryAnalytics,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
