@@ -1,0 +1,54 @@
+<ion-menu [content]="rootContent" type="overlay" id="rootMenu">
+  <ion-content #content>
+    <ion-list class="menu-wrapper">
+      <button ion-item (click)="navTo('main')">
+        <ion-icon color="primary" name="icon_genki_icon_home"></ion-icon>
+        {{"app.menu.home" | translate }}
+      </button>
+      <button ion-item (click)="navTo('userdetail')">
+        <ion-icon color="primary" name="icon_genki_icon_member"></ion-icon>
+        {{"app.menu.memberArea" | translate }}
+      </button>
+      <button ion-item (click)="navTo('message')">
+        <ion-icon color="primary" name="icon_genki_icon_inbox"></ion-icon>
+        {{"app.menu.inbox" | translate }}
+        <ion-badge item-right color="light" *ngIf="MessageCount !== 0">{{MessageCount}}</ion-badge>
+      </button>
+      <button ion-item (click)="navTo('queuing')">
+        <ion-icon color="primary" name="icon_genki_icon_queuing"></ion-icon>
+        {{"app.menu.queuing" | translate }}
+      </button>
+      <button ion-item (click)="navTo('coupon')">
+        <ion-icon color="primary" name="icon_genki_icon_coupon"></ion-icon>
+        {{"app.menu.coupon" | translate }}
+        <ion-badge item-right color="light" *ngIf="couponConut!=0">{{couponConut}}</ion-badge>
+      </button>
+      <button ion-item (click)="navTo('premember')">
+        <ion-icon color="primary" name="icon_genki_icon_join"></ion-icon>
+        {{"app.menu.preMember" | translate }}
+      </button>
+      <button ion-item (click)="navTo('news')">
+        <ion-icon color="primary" name="icon_genki_icon_news"></ion-icon>
+        {{"app.menu.news" | translate }}
+      </button>
+      <button ion-item (click)="inappbrowser('menu','app.menu.menu','coververtical')">
+        <ion-icon color="primary" name="icon_genki_icon_sushi"></ion-icon>
+        {{"app.menu.menu" | translate }}
+      </button>
+      <button ion-item (click)="navTo('store')">
+        <ion-icon color="primary" name="icon_genki_icon_store"></ion-icon>
+        {{"app.menu.store" | translate }}
+      </button>
+      <button ion-item (click)="external_inappbrowser('takeOut','app.menu.takeOut','coververtical')">
+        <ion-icon color="primary" name="icon_genki_icon_take_away"></ion-icon>
+        {{"app.menu.takeOut" | translate }}
+      </button>
+      <button ion-item (click)="navTo('settings')">
+        <ion-icon color="primary" name="icon_genki_icon_setting"></ion-icon>
+        {{"app.menu.settings" | translate }}
+      </button>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+<!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+<ion-nav [root]="rootPage" #rootContent swipeBackEnabled="true"></ion-nav>

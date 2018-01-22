@@ -1,0 +1,748 @@
+// http://ionicframework.com/docs/v2/theming/
+// App Global Sass
+// --------------------------------------------------
+// Put style rules here that you want to apply globally. These
+// styles are for the entire app and not just one component.
+// Additionally, this file can be also used as an entry point
+// to import other Sass files to be included in the output CSS.
+//
+// Shared Sass variables, which can be used to adjust Ionic's
+// default Sass variables, belong in "theme/variables.scss".
+//
+// To declare rules for a specific mode, create a child rule
+// for the .md, .ios, or .wp mode classes. The mode class is
+// automatically applied to the <body> element in the app.
+@mixin aspect-ratio($width, $height) {
+    position: relative;
+    &:before {
+        display: block;
+        content: "";
+        width: 100%;
+        padding-top: ($height / $width) * 100%;
+    }
+    >img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+}
+
+.img-square {
+    @include aspect-ratio(1, 1);
+}
+
+.img-16x9 {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: auto; // @include aspect-ratio(16, 9);
+    img {
+        object-fit: cover;
+    }
+}
+
+.img-square img {
+    object-fit: cover;
+    /* Do not scale the image */
+    object-position: center;
+    /* Center the image within the element */
+}
+
+.ratio-58 {
+    position: relative;
+    z-index: 1;
+    height: 35vw;
+    overflow-y: hidden;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    img {
+        flex-shrink: 0;
+    }
+}
+
+.button {
+    // for abnormal large font in button
+    white-space: normal;
+}
+
+.back-button-icon {
+    font-size: 2.8rem;
+}
+
+ion-card-title.card-title {
+    padding: 8px;
+}
+
+// Text //
+.sm-font-size {
+    font-size: .8rem
+}
+
+.md-font-size {
+    font-size: 1.4rem;
+}
+
+.lg-font-size {
+    font-size: 1.8rem;
+}
+
+.xlg-font-size {
+    font-size: 2rem;
+}
+
+.xxlg-font-size {
+    font-size: 5rem;
+}
+
+.r-ali {
+    text-align: right;
+}
+
+.l-ali {
+    text-align: left;
+}
+
+.c-ali {
+    text-align: center;
+}
+
+.flex-ctn {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+
+.iflex-ctn {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+}
+
+.font-sty-bold {
+    font-weight: bold;
+}
+
+.font-color-lo {
+    color: color($colors, light-orange);
+}
+
+.font-color-danger {
+    color: color($colors, danger);
+}
+
+.font-color-dark {
+    color: color($colors, dark) !important;
+}
+
+.font-color-mg {
+    color: color($colors, mid-grey);
+}
+
+.font-color-lightgrey {
+    color: color($colors, light-grey) !important;
+}
+
+.pin-icon {
+    font-size: 1rem;
+}
+
+.button.activated p {
+    background-color: #000;
+    color: #fff;
+}
+
+.button-outline-ios-dark.activated {
+    background: transparent;
+    color: #222;
+}
+
+.button:active {
+    background-color: #000;
+    color: #fff;
+}
+
+.button-primary,
+.button-ios-primary {
+    border-bottom: 2px solid #9e6d00;
+}
+
+.facebook {
+    background-color: #3b5998;
+    border-bottom: 2px solid #152f65;
+    color: #fff;
+    border: 0px;
+}
+
+.border-top-clear {
+    border-top: 0px !important;
+}
+
+// Side Menu //
+ion-menu#menu .menu-inner ion-content {
+    background-color: #000 !important;
+}
+
+.menu-wrapper button {
+    background-color: #000;
+    color: color($colors, primary);
+}
+
+.menu-wrapper button {
+    padding: .3rem 2.8rem;
+    border-bottom: 1px solid #585243;
+    border-top: 0px !important;
+}
+
+.menu-wrapper button:last-child {
+    border-bottom: 1px solid #585243 !important;
+}
+
+.menu-wrapper button div.item-inner {
+    padding-right: 0 !important;
+    background-image: none !important;
+    border-bottom: 0px !important;
+}
+
+.menu-wrapper button .item-inner ion-label {
+    font-size: 1.4rem;
+    overflow: visible;
+}
+
+.menu-wrapper button.activated {
+    background-color: color($colors, dark);
+}
+
+.menu-wrapper ion-icon {
+    padding-right: .4rem;
+}
+
+// Slide Stlye //
+.swiper-pagination-bullet-active {
+    background: color($colors, primary);
+}
+
+// Alert Message //
+.alert-head {
+    background-color: color($colors, primary);
+    color: color($colors, dark);
+}
+
+ion-alert {
+    .alert-wrapper {
+        .alert-message {
+            background-color: color($colors, primary);
+            color: color($colors, dark);
+            font-size: 1.6rem;
+            padding-bottom: 1rem;
+        }
+        .alert-button-group {
+            // font-size: 1.4rem;
+            span {
+                font-size: 1.4rem;
+            }
+            .alert-button:first-child {
+                color: color($colors, mid-grey);
+            }
+            .alert-button:last-child {
+                color: #000 !important;
+                font-weight: normal;
+            }
+        }
+    }
+}
+
+.mp-clear {
+    margin: 0 !important;
+}
+
+ion-content {
+    background-color: color($colors, bg_color) !important;
+}
+
+ion-img.img-square .img-placeholder {
+    background-image: url('../assets/images/placeholder-image.png') !important;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+}
+
+ion-label {
+    // overflow: visible !important;
+}
+
+.swiper-slide {
+    align-items: flex-start !important;
+}
+
+.btn-toolbar-buttons button span {
+    height: 50px;
+}
+
+.btn-toolbar-buttons .btn-toolbar-vip span {
+    background: url(../assets/img/member.png) no-repeat center;
+    background-size: 50px 50px;
+}
+
+.btn-toolbar-buttons .btn-toolbar-store span {
+    background: url(../assets/img/store.png) no-repeat center;
+    background-size: 50px 50px;
+}
+
+.btn-toolbar-buttons .btn-toolbar-queuingTicket span {
+    background: url(../assets/img/queue.png) no-repeat center;
+    background-size: 50px 50px;
+}
+
+.btn-toolbar-buttons .btn-toolbar-coupon span {
+    background: url(../assets/img/coupon.png) no-repeat center;
+    background-size: 50px 50px;
+}
+
+.btn-toolbar-buttons .btn-toolbar-member span {
+    background: url(../assets/img/join.png) no-repeat center;
+    background-size: 50px 50px;
+}
+
+.homeback {
+    background: url(../assets/img/home.png) no-repeat center;
+    background-size: 21px 21px;
+}
+
+/// Header //
+.toolbar-background {
+    background: color($colors, primary);
+}
+
+.bar-button {
+    color: color($colors, dark);
+}
+
+// Promotion && Coupon //
+.promotion-card-wrapper {
+    ion-row.title {
+        ion-icon {
+            padding: 1.6rem .7rem .7rem 1.4rem;
+        }
+        ion-col {
+            padding: 1.4rem 1.4rem .7rem 0;
+            white-space: normal;
+            word-break: break-word;
+        }
+    }
+    ion-row.detail {
+        margin-bottom: 1.4rem;
+        white-space: normal;
+        ion-col {
+            padding-left: 1.4rem;
+            white-space: normal;
+            word-break: break-word;
+            &:first-child {
+                flex-grow: 2;
+            }
+        }
+    }
+}
+
+.promotion-card-wrapper.list-mode {
+    ion-row.detail {
+        margin-bottom: 1.4rem;
+        padding-right: 1.4rem;
+        ion-col {
+            padding-left: 2.6rem;
+        }
+    }
+}
+
+.promotion-card-wrapper.detail-mode {
+    background: color($colors, bg_color);
+    ion-row.title {
+        ion-col {
+            padding: 5px 5px 0;
+        }
+    }
+    ion-row.detail {
+        ion-col {
+            padding: 5px 5px 0;
+        }
+    }
+}
+
+// List Item Click Effect //
+ion-list.list ion-item.item {
+    background: color($colors, bg_color);
+}
+
+ion-list.list ion-item.item:active {
+    background: rgba(255, 252, 213, 0.4);
+}
+
+// Pre Member //
+.style-button {
+    border-radius: 50%;
+    width: 13rem;
+    height: 13rem;
+    background: #ff6600;
+    background-repeat: no-repeat;
+    background-size: auto 45px;
+    background-position: 50% 80%;
+    ion-icon {
+        color: #fff;
+        display: block;
+        width: 100%;
+        font-size: 4rem;
+        padding-top: 1rem;
+    }
+    span.button-inner {
+        display: flex;
+        flex-direction: column;
+    }
+    div {
+        padding-top: 1rem;
+        color: #fff;
+        font-weight: bold;
+        letter-spacing: .05rem;
+        -webkit-font-smoothing: antialiased;
+        white-space: normal;
+    }
+}
+
+// ALL List Header//
+ion-list-header.header {
+    min-height: 2rem;
+    background: #DADADA;
+    color: color($colors, mid-grey);
+    ion-label {
+        margin: 0 .4rem;
+        font-size: 1.2rem;
+    }
+}
+
+// ALL Queuing Card TOP //
+ion-card.header span.title p {
+    display: inline-block;
+}
+
+ion-card.header span.title p:first-child {
+    color: color($colors, danger);
+    font-size: 1.6rem;
+    max-width: 80%;
+}
+
+ion-card.header span.title p:nth-child(2) {
+    color: color($colors, dark);
+    font-size: 1.2rem;
+}
+
+ion-card.header span {
+    width: 90%;
+    display: inline-block;
+    color: color($colors, light-grey);
+    margin-bottom: .4rem;
+}
+
+ion-card.header ion-icon {
+    padding-right: .4rem;
+    vertical-align: top;
+}
+
+ion-card.header {
+    border-radius: .8rem;
+}
+
+ion-card.header ion-avatar img {
+    width: 45px;
+    height: auto;
+    border-radius: 0px;
+}
+
+// take out the border between button //
+.alert-ios .alert-button {
+    // border-right: 0px;
+}
+
+// checkbox style //
+.checkbox .checkbox-checked,
+.checkbox .checkbox-icon {
+    border-color: #c8c7cc;
+    background: transparent;
+    border-radius: 10%;
+}
+
+.checkbox .checkbox-checked .checkbox-inner {
+    border-color: color($colors, light-orange);
+    width: 10px;
+    height: 15px;
+    top: -1px;
+    left: 5px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+}
+
+// Icon Font //
+@include makeIcon("icon_genki_icon_add",
+"\e900");
+@include makeIcon("icon_genki_icon_coupon",
+"\e901");
+@include makeIcon("icon_genki_icon_home",
+"\e902");
+@include makeIcon("icon_genki_icon_inbox",
+"\e903");
+@include makeIcon("icon_genki_icon_join",
+"\e904");
+@include makeIcon("icon_genki_icon_less",
+"\e905");
+@include makeIcon("icon_genki_icon_location",
+"\e906");
+@include makeIcon("icon_genki_icon_location_02",
+"\e907");
+@include makeIcon("icon_genki_icon_member",
+"\e908");
+@include makeIcon("icon_genki_icon_news",
+"\e909");
+@include makeIcon("icon_genki_icon_phone",
+"\e90a");
+@include makeIcon("icon_genki_icon_pointer",
+"\e90b");
+@include makeIcon("icon_genki_icon_queuing",
+"\e90c");
+@include makeIcon("icon_genki_icon_setting",
+"\e90d");
+@include makeIcon("icon_genki_icon_share",
+"\e90e");
+@include makeIcon("icon_genki_icon_store",
+"\e90f");
+@include makeIcon("icon_genki_icon_sushi",
+"\e910");
+@include makeIcon("icon_genki_icon_take_away",
+"\e911");
+@include makeIcon("icon_genki_icon_tick",
+"\e912");
+@include makeIcon("icon_genki_icon_time",
+"\e913");
+@include makeIcon("icon_hamburger",
+"\e914");
+@include makeIcon("icon_navigate",
+"\e915");
+
+/* PrememberAlert_UpperAndLowerDisplay alert style */
+
+ion-alert.PrememberAlert_UpperAndLowerDisplay .alert-button-group {
+    flex-wrap: nowrap;
+}
+
+
+/*  end */
+
+ion-alert.prompt_moveToCentral div.alert-wrapper {
+    // margin-top: 50%;
+    margin-top: auto;
+    margin-bottom: auto;
+    .input-cover {
+        position: static !important
+    }
+}
+
+ion-alert.prompt_moveToUp div.alert-wrapper {
+    margin-top: 30%; // margin-top: initial;
+    .input-cover {
+        position: static !important
+    }
+}
+
+.alert-input-group {
+    background-color: color($colors, primary);
+}
+
+.alert-counter .alert-message {
+    white-space: pre-wrap;
+}
+
+.alert-reject-promotion .alert-message {
+    white-space: pre-wrap!important;
+    text-align: left!important;
+}
+
+.sectionScroll {
+    overflow: scroll;
+}
+
+////// Seperate Form Style ///////
+.memberRegistration {
+    flex-basis: 0;
+    height: 5rem;
+    min-height: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    border-bottom: 0.1rem solid color($colors, light-grey);
+    color: color($colors, dark);
+    p {
+        margin-right: 1rem;
+    }
+}
+
+.by-step {
+    .col {
+        color: #fff;
+        width: 2rem;
+        height: 2rem;
+        background: color($colors, dark);
+        font-size: 1.2rem;
+        line-height: 1;
+        margin-right: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        span {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 1rem 0 1rem 0.5rem;
+            border-color: transparent transparent transparent color($colors, dark);
+            position: absolute;
+            right: -0.5rem;
+            top: 0;
+        }
+    }
+    .currentPage {
+        background: color($colors, light-orange);
+        color: #000;
+        span {
+            border-color: transparent transparent transparent color($colors, light-orange);
+        }
+    }
+}
+
+.sep-form {
+    ion-list.list {
+        padding: 0 1.6rem;
+        ion-item.item {
+            font-size: 1.6rem;
+            background: transparent;
+            color: #333;
+            .select-text,
+            .text-input {
+                color: #000;
+                font-weight: bold;
+                font-size: 1.6rem;
+            }
+        }
+    }
+    .remarks {
+        color: color($colors, mid-grey);
+        font-size: 1rem;
+        padding-left: 16px;
+    }
+    .tc-wrapper {
+        padding: 2rem;
+        font-size: 1.4rem;
+        text-align: left;
+        line-height: 1.5;
+        border-bottom: 0.1rem solid #656565;
+        h3 {
+            text-align: center;
+        }
+        flex-grow: 1;
+    }
+    .action {
+        flex-basis: 0;
+        min-height: 10rem;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem 2rem;
+        justify-content: flex-end;
+        .modal-action {
+            flex-basis: 0;
+            flex-grow: 2.5;
+            background: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            ion-item {
+                background: none;
+                color: #333;
+                border: 0;
+                .item-inner {
+                    border: 0 !important;
+                }
+            }
+            ion-item.activated {
+                background: none;
+            }
+            div {
+                white-space: normal;
+            }
+        }
+        .counter {
+            display: flex;
+            .btn-sec {
+                margin: .4rem .2rem;
+            }
+            button {
+                width: 50%;
+            }
+            button.single {
+                width: 100%;
+                background: color($colors, primary);
+            }
+            button:last-child {
+                margin-left: 0.5rem;
+            }
+        }
+    }
+    .disable-offline {
+        opacity: 0.5;
+    }
+}
+
+.sep-ft {
+    padding: 1rem 2rem;
+    .modal-action {
+        .check {
+            background: transparent;
+            .item-inner {
+                border: 0;
+            }
+        }
+    }
+    .action-btn {
+        display: inline-flex;
+        justify-content: space-between;
+        width: 100%;
+        button {
+            flex: 1;
+        }
+    }
+}
+
+.button-ios:hover:not(.disable-hover) {
+    opacity: 1.0;
+}
+
+.button-ios-primary.activated {
+    background-color: #000;
+    color: #fff;
+}
+
+.facebook.activated {
+    background-color: #000;
+    color: #fff;
+}
+
+
+/* only ios start */
+
+.hasOffetTop {
+    top: 20px;
+}
+
+
+/* only ios end */
