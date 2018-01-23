@@ -1,3 +1,4 @@
+import { TermConditionsPage } from './../pages/term-conditions/term-conditions';
 import { FlurryAnalytics } from '@ionic-native/flurry-analytics';
 import { Badge } from '@ionic-native/badge';
 import { StartupService } from './../services/startup.service';
@@ -38,6 +39,7 @@ export function createTranslateLoader(http: Http) {
   declarations: [
     MyApp,
     HomePage,
+    TermConditionsPage,
   ],
   imports: [
     TranslateModule.forRoot({
@@ -68,6 +70,7 @@ export function createTranslateLoader(http: Http) {
   entryComponents: [
     MyApp,
     HomePage,
+    TermConditionsPage,
   ],
   providers: [
     Badge,

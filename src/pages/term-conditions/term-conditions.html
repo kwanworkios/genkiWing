@@ -1,0 +1,32 @@
+<section class="fadebg">
+    
+    </section>
+    <div class="ad-modal-wrapper">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="topnav">
+            <ion-title>{{"pages.T&C.navbarTitle" | translate }}</ion-title>
+          </div>
+          <div #modalBody class="modal-img">
+            <iframe sandbox="allow-forms allow-scripts" [hidden]="isOffline" id="iframe" style="height: 100%; width:100%;padding:1rem;" frameborder="0"></iframe>
+            <div class="offlineHint">
+              <p *ngIf="isOffline">{{"pages.T&C.offlineHint" | translate }}</p>
+            </div>
+          </div>
+          <div class="modal-action terms-ft-wrapper">
+            <ion-item tappable text-wrap (click)="check()">
+              <!--first launch T&C -->
+              <ion-label *ngIf="!isCancel" class="md-font-size">{{"pages.T&C.firstLaunchCheckboxHint" | translate }}</ion-label>
+              <!--premember reg T&C -->
+              <ion-label *ngIf="isCancel" class="md-font-size">{{"pages.T&C.registerPreMemberCheckboxHint" | translate }}</ion-label>
+              <ion-checkbox [disabled]="isOffline" [(ngModel)]="agreeTerms"></ion-checkbox>
+            </ion-item>
+            <ion-buttons text-center class="action iflex-ctn">
+              <button ion-button color="primary" *ngIf="isCancel" (click)="cancel()" outline color="dark">{{"pages.T&C.cancel" | translate }}</button>
+              <button ion-button color="primary" [disabled]="isOffline" *ngIf="!isOffline" (click)="dismiss()" [disabled]="!agreeTerms">{{"pages.T&C.confirm" | translate }}</button>
+              <button ion-button color="primary" *ngIf="isOffline" (click)="reload()">{{"pages.T&C.Reload" | translate }}</button>
+            </ion-buttons>
+          </div>
+        </div>
+      </div>
+    </div>

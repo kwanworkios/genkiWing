@@ -1,3 +1,5 @@
+import { TermConditionsPage } from '../pages/term-conditions/term-conditions';
+import { Observable } from 'rxjs';
 import { VersionChecker } from './../framework/utilities/version-checker';
 import { Component, ViewChild, Injector } from '@angular/core';
 import { Nav, Platform, NavController, Loading, LoadingController, AlertController, ModalController } from 'ionic-angular';
@@ -118,15 +120,17 @@ export class MyApp {
     this.loading(true);
     this.storage.ready().then(() => {
       this.storage.get('languageMode').then((lang) => {
-        let startupObservable = this.startupService.getStartup();
+        let startupObservable: Observable<Startup>;
         if (lang) {
           startupObservable = this.startupService.getStartup(lang);
+        } else {
+          startupObservable = this.startupService.getStartup();
         }
         startupObservable.subscribe((startup) => {
           this.loading(false);
           this.startupService.saveStartup(startup);
           this.webLinks();
-          this.events.publish('loadedStartUpdata', startup);
+          // this.events.publish('loadedStartUpdata', startup);
           this.showVersionCheckAlert(startup);
         }, err => {
           this.loading(false);
@@ -196,7 +200,7 @@ export class MyApp {
       } else if (updateAvailable) {
         let upgradeAlert = this.alertCtrl.create({
           message: (updateMsg == '' || !updateMsg) ? this.translateService.instant('app.upgradeAvailableMessage') : updateMsg,
-          buttons: [{
+          buttons: [{ 
             text: this.translateService.instant('app.cancelExit'),
             role: 'cancel',
             handler: () => {
@@ -271,8 +275,41 @@ export class MyApp {
   }
 
   openTermsModal() {
-    //TermsConditionsPage
-    // let modal = this.modalCtrl.create();
+    let modal = this.modalCtrl.create(TermConditionsPage);
+    modal.onDidDismiss(result => {
+      this.openNotification();
+      this.loading(false);
+      let isReload = result['isReload'];
+      let isAgree = result['isAgree'];
+      this.handleTermsReload(isReload);
+      if(isAgree) {
+        this.storage.set('isAgreeTerms', true);
+      }
+      this.appVersion.getVersionNumber().then(versionNumber => {
+        if(versionNumber) {
+          this.storage.set('appVersion', versionNumber);
+        }
+      }).catch(err => {
+        console.log(err);
+      });
+    });
+    modal.present();
+  }
+
+  handleTermsReload(isReload: boolean) {
+    if(isReload) {
+      this.callStartupData();
+      this.requestMessageData();
+      this.requestCoupon();
+    }
+  }
+
+  requestMessageData(){
+
+  }
+
+  requestCoupon() {
+
   }
 
   showAlert(title: string = null, message: string, buttons: any = [this.translateService.instant('app.alertButtonOK')]) {
