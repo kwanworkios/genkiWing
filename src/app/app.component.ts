@@ -49,6 +49,8 @@ export class MyApp {
       this.hideSplash();
       this.handleEvents();
       this.callStartupData();
+      this.requestMessageData();
+      this.requestCoupon();
       this.translateConfig();
     });
   }
@@ -305,7 +307,7 @@ export class MyApp {
   }
 
   requestMessageData(){
-
+    
   }
 
   requestCoupon() {
