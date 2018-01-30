@@ -1,3 +1,4 @@
+import { InboxMessageService } from './../services/inboxMessage.service';
 import { TermConditionsPage } from '../pages/term-conditions/term-conditions';
 import { Observable } from 'rxjs';
 import { VersionChecker } from './../framework/utilities/version-checker';
@@ -20,6 +21,7 @@ import { StartupService } from '../services/startup.service';
 import { AppVersion } from '@ionic-native/app-version';
 import { ThemeableBrowserService } from '../services/themeableBrowser.service';
 import { Startup } from '../data/startup';
+import { UserService } from '../services/user.service';
 
 @Component({
   templateUrl: 'app.html'
@@ -34,8 +36,9 @@ export class MyApp {
   webMenu: string;
   webTakeOut: string;
   isUpdateAlertShowing: boolean;
+  userLoginState = false;
 
-  constructor(public inject: Injector, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public storage: Storage, public translateService: TranslateService, public configService: ConfigService, public events: Events, public hockeyapp: HockeyApp, public deeplinks: Deeplinks, public navController: NavController, public loadingController: LoadingController, public startupService: StartupService, public appVersion: AppVersion, public alertCtrl: AlertController, public themeableBrowserService: ThemeableBrowserService, public modalCtrl: ModalController) {
+  constructor(public inject: Injector, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public storage: Storage, public translateService: TranslateService, public configService: ConfigService, public events: Events, public hockeyapp: HockeyApp, public deeplinks: Deeplinks, public navController: NavController, public loadingController: LoadingController, public startupService: StartupService, public appVersion: AppVersion, public alertCtrl: AlertController, public themeableBrowserService: ThemeableBrowserService, public modalCtrl: ModalController, public inboxMessageService: InboxMessageService, public userService: UserService) {
     this.initializeApp();
 
   }
@@ -202,7 +205,7 @@ export class MyApp {
       } else if (updateAvailable) {
         let upgradeAlert = this.alertCtrl.create({
           message: (updateMsg == '' || !updateMsg) ? this.translateService.instant('app.upgradeAvailableMessage') : updateMsg,
-          buttons: [{ 
+          buttons: [{
             text: this.translateService.instant('app.cancelExit'),
             role: 'cancel',
             handler: () => {
@@ -284,11 +287,11 @@ export class MyApp {
       let isReload = result['isReload'];
       let isAgree = result['isAgree'];
       this.handleTermsReload(isReload);
-      if(isAgree) {
+      if (isAgree) {
         this.storage.set('isAgreeTerms', true);
       }
       this.appVersion.getVersionNumber().then(versionNumber => {
-        if(versionNumber) {
+        if (versionNumber) {
           this.storage.set('appVersion', versionNumber);
         }
       }).catch(err => {
@@ -299,15 +302,49 @@ export class MyApp {
   }
 
   handleTermsReload(isReload: boolean) {
-    if(isReload) {
+    if (isReload) {
       this.callStartupData();
       this.requestMessageData();
       this.requestCoupon();
     }
   }
 
-  requestMessageData(){
-    
+  requestMessageData() {
+    this.inboxMessageService.getGlobalNotice().subscribe(notices => {
+      this.inboxMessageService.setMessage(notices);
+      this.handleBadgeCount();
+    }, err => {
+      console.log('err:', err);
+
+    });
+  }
+
+  handleBadgeCount() {
+    if (this.userService.memberState === 1) {
+      this.userLoginState = true;
+      this.badgeMessageCount();
+    } else {
+      this.judgeUserLogin().then(user => {
+        if (user) {
+          this.userLoginState = true;
+          this.badgeMessageCount();
+        } else {
+          this.userLoginState = true;
+          this.badgeMessageCount();
+        }
+      }, err => {
+        this.userLoginState = false;
+        this.badgeMessageCount();
+      });
+    }
+  }
+
+  badgeMessageCount() {
+
+  }
+
+  judgeUserLogin(): Promise<any> {
+    return;
   }
 
   requestCoupon() {

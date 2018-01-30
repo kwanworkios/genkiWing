@@ -30,6 +30,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { GoogleMapsLoader } from '../services/map-loader.service';
 import { ThemeableBrowser } from '@ionic-native/themeable-browser';
 import { ThemeableBrowserService } from '../services/themeableBrowser.service';
+import { InboxMessageService } from '../services/inboxMessage.service';
 
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -94,6 +95,7 @@ export function createTranslateLoader(http: Http) {
     PaymentService,
     StoreService,
     StartupService,
+    InboxMessageService,
     FlurryAnalytics,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
