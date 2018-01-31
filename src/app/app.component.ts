@@ -37,6 +37,7 @@ export class MyApp {
   webTakeOut: string;
   isUpdateAlertShowing: boolean;
   userLoginState = false;
+  messageCount: number = 0;
 
   constructor(public inject: Injector, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public storage: Storage, public translateService: TranslateService, public configService: ConfigService, public events: Events, public hockeyapp: HockeyApp, public deeplinks: Deeplinks, public navController: NavController, public loadingController: LoadingController, public startupService: StartupService, public appVersion: AppVersion, public alertCtrl: AlertController, public themeableBrowserService: ThemeableBrowserService, public modalCtrl: ModalController, public inboxMessageService: InboxMessageService, public userService: UserService) {
     this.initializeApp();
@@ -340,11 +341,58 @@ export class MyApp {
   }
 
   badgeMessageCount() {
+    let tmp = 0;
+    this.inboxMessageService.unReadMsgCount().then(count => {
+      let unreadMessages = count;
+      let unreadPersonalMessages = 0;
 
+      if (this.userLoginState) {
+        this.storage.ready().then(() => {
+          this.storage.get('languageMode').then(lang => {
+            if(lang) {
+              this.getPersonalAddLang(unreadPersonalMessages, unreadMessages, lang);
+            } else {
+              this.getPersonalAddLang(unreadPersonalMessages, unreadMessages, null);
+            }
+          });
+        });
+      } else {
+        this.messageCount = unreadMessages;
+        this.handleBadge(this.messageCount);
+        this.events.publish('requestMessageSuccess_MessageCount_fromApp', this.messageCount);
+      }
+    });
   }
 
   judgeUserLogin(): Promise<any> {
-    return;
+    return this.storage.get('jcr.user');
+  }
+
+  getPersonalAddLang(unreadPersonalMsg, unreadMsg, lang) {
+    this.userService.getPersonalMessage(lang).subscribe(personalNotices => {
+      if (personalNotices.length > 0) {
+        let Ptmp = 0;
+        personalNotices.forEach(personalNotice => {
+          if(personalNotice.ReadStatus == 'U') {
+            Ptmp++;
+          }
+        });
+        unreadPersonalMsg = Ptmp;
+      }
+      this.messageCount = Number(unreadMsg) + Number(unreadPersonalMsg);
+      this.handleBadge(this.messageCount);
+  
+      this.events.publish('requestMessageSuccess_MessageConut_fromApp', this.messageCount);
+    }, err => {
+      this.messageCount = unreadMsg
+      this.handleBadge(this.messageCount);
+      this.events.publish('requestMessageSuccess_MessageConut_fromApp', this.messageCount);
+    });
+   
+  }
+
+  handleBadge(messageCount: number) {
+
   }
 
   requestCoupon() {

@@ -92,4 +92,5 @@
     </plugin>
     <plugin name="cordova-plugin-app-version" spec="~0.1.9" />
     <plugin name="cordova-plugin-themeablebrowser" spec="~0.2.17" />
+    <plugin name="cordova-plugin-badge" spec="^0.8.1" />
 </widget>

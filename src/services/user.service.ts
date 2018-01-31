@@ -10,6 +10,7 @@ import { BaseService } from "../framework/base/base-service";
 import { User } from "../data/user";
 import { AQuery } from "../framework/base/aquery";
 import { TranslateService } from '@ngx-translate/core';
+import { PersonalNotice } from '../data/personalNotice';
 
 @Injectable()
 export class UserService extends BaseService {
@@ -127,6 +128,26 @@ export class UserService extends BaseService {
             }
         });
     }
+
+    putUser(user) {
+        this.restoreUser(user);
+
+        if(this.isKeepLogin) {
+            this.storage.set('jcr.user', user);
+        }
+    }
+
+    putPreMember(premember) {
+        this.restorePreMember(premember);
+        this.storage.set("jcr.premember", premember);
+        try {
+          this.storage.set("jcr.remember.lastPointCard", premember.crm.card.cardnumber);
+        }
+        catch (err) {
+          console.log(err);
+        }
+      }
+
     /**
      * 
      * @param resultMember api response json
@@ -328,6 +349,50 @@ export class UserService extends BaseService {
         return aq.getJson().map(json => {
             this.logoutPreMember();
             return json;
+        });
+    }
+
+    getPersonalMessage(lang?) {
+        return this.loadProfile(null, lang).map(user => {
+            if (!user.crm) return;
+            if (!user.crm.card) return;
+            return Data.toDataArray(PersonalNotice, user['crm']['Message_HTML']);
+        });
+    }
+
+    loadProfile(sid?: string, lang?: string): Observable<User> {
+        var url = "/api/v1/jcr/member.json";
+
+        if (sid) {
+            url = url + "?sid=" + sid;
+        }
+        else {
+            url = url + "?sid=" + this.configs.getSessionId();
+        }
+        var aq = this.aq;
+        aq.url = url;
+        aq.method = "get";
+
+        var params = {};
+        params["brandId"] = 100058;
+        if (lang) {
+            params["locale"] = lang;
+        }
+        aq.params = params;
+        return aq.getJson().map(json => {
+            if (!json['data']['crm']) return;
+            if (!json['data']['crm']['card']) return;
+            if (json['data']['crm']['card']['cardcategory'] == '050') {
+                this.putUser(json['data']);
+                return json['data'];
+            } else {
+                setTimeout(() => {
+                    this.logoutUser();
+                }, 500);
+                let message = this.translateService.instant('app.loginError');
+                let err = new Error(message);
+                throw err;
+            }
         });
     }
 }
