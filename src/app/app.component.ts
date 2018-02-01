@@ -22,6 +22,7 @@ import { AppVersion } from '@ionic-native/app-version';
 import { ThemeableBrowserService } from '../services/themeableBrowser.service';
 import { Startup } from '../data/startup';
 import { UserService } from '../services/user.service';
+import { Badge } from '@ionic-native/badge';
 
 @Component({
   templateUrl: 'app.html'
@@ -39,7 +40,7 @@ export class MyApp {
   userLoginState = false;
   messageCount: number = 0;
 
-  constructor(public inject: Injector, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public storage: Storage, public translateService: TranslateService, public configService: ConfigService, public events: Events, public hockeyapp: HockeyApp, public deeplinks: Deeplinks, public navController: NavController, public loadingController: LoadingController, public startupService: StartupService, public appVersion: AppVersion, public alertCtrl: AlertController, public themeableBrowserService: ThemeableBrowserService, public modalCtrl: ModalController, public inboxMessageService: InboxMessageService, public userService: UserService) {
+  constructor(public inject: Injector, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public storage: Storage, public translateService: TranslateService, public configService: ConfigService, public events: Events, public hockeyapp: HockeyApp, public deeplinks: Deeplinks, public navController: NavController, public loadingController: LoadingController, public startupService: StartupService, public appVersion: AppVersion, public alertCtrl: AlertController, public themeableBrowserService: ThemeableBrowserService, public modalCtrl: ModalController, public inboxMessageService: InboxMessageService, public userService: UserService, public badge: Badge) {
     this.initializeApp();
 
   }
@@ -330,7 +331,7 @@ export class MyApp {
           this.userLoginState = true;
           this.badgeMessageCount();
         } else {
-          this.userLoginState = true;
+          this.userLoginState = false;
           this.badgeMessageCount();
         }
       }, err => {
@@ -392,7 +393,18 @@ export class MyApp {
   }
 
   handleBadge(messageCount: number) {
-
+    if(messageCount > 0) {
+      this.badge.get().then(number => {
+        if (number != messageCount) {
+          this.badge.set(messageCount);
+        }
+      }, err => {
+        console.log('handleBadgeErr:', err);
+        
+      });
+    } else {
+      this.badge.clear();
+    }
   }
 
   requestCoupon() {

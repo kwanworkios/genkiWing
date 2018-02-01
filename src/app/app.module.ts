@@ -31,6 +31,7 @@ import { GoogleMapsLoader } from '../services/map-loader.service';
 import { ThemeableBrowser } from '@ionic-native/themeable-browser';
 import { ThemeableBrowserService } from '../services/themeableBrowser.service';
 import { InboxMessageService } from '../services/inboxMessage.service';
+import { UserService } from '../services/user.service';
 
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -96,6 +97,7 @@ export function createTranslateLoader(http: Http) {
     StoreService,
     StartupService,
     InboxMessageService,
+    UserService,
     FlurryAnalytics,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
