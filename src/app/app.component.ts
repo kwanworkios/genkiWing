@@ -4,13 +4,11 @@ import { TermConditionsPage } from '../pages/term-conditions/term-conditions';
 import { Observable } from 'rxjs';
 import { VersionChecker } from './../framework/utilities/version-checker';
 import { Component, ViewChild, Injector } from '@angular/core';
-import { Nav, Platform, NavController, Loading, LoadingController, AlertController, ModalController } from 'ionic-angular';
+import { Nav, Platform, NavController, Loading, LoadingController, AlertController, ModalController, Events, NavOptions, MenuController, ToastController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
-import { Events } from 'ionic-angular';
-
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { GoogleMapsLoader } from '../services/map-loader.service';
@@ -26,6 +24,7 @@ import { UserService } from '../services/user.service';
 import { Badge } from '@ionic-native/badge';
 import { CouponService } from '../services/coupon.service';
 import { Coupon } from '../data/coupon';
+import { QueuingService } from '../services/queuing.service';
 
 @Component({
   templateUrl: 'app.html'
@@ -43,8 +42,9 @@ export class MyApp {
   userLoginState = false;
   messageCount: number = 0;
   couponConut = 0;
+  pendingListTicket: boolean = false;;
 
-  constructor(public inject: Injector, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public storage: Storage, public translateService: TranslateService, public configService: ConfigService, public events: Events, public hockeyapp: HockeyApp, public deeplinks: Deeplinks, public navController: NavController, public loadingController: LoadingController, public startupService: StartupService, public appVersion: AppVersion, public alertCtrl: AlertController, public themeableBrowserService: ThemeableBrowserService, public modalCtrl: ModalController, public inboxMessageService: InboxMessageService, public userService: UserService, public badge: Badge, public couponService: CouponService) {
+  constructor(public inject: Injector, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public storage: Storage, public translateService: TranslateService, public configService: ConfigService, public events: Events, public hockeyapp: HockeyApp, public deeplinks: Deeplinks, public navController: NavController, public loadingController: LoadingController, public startupService: StartupService, public appVersion: AppVersion, public alertCtrl: AlertController, public themeableBrowserService: ThemeableBrowserService, public modalCtrl: ModalController, public inboxMessageService: InboxMessageService, public userService: UserService, public badge: Badge, public couponService: CouponService, public menuCtrl: MenuController, public queuingService: QueuingService, public toastController: ToastController) {
     this.initializeApp();
 
   }
@@ -61,6 +61,8 @@ export class MyApp {
       this.requestMessageData();
       this.requestCoupon();
       this.translateConfig();
+      this.handleKeyboard();
+      this.handleOffset();
     });
   }
 
@@ -412,7 +414,7 @@ export class MyApp {
   }
 
   requestCoupon() {
-    if (this.userService.memberState === 1) {
+    if (this.userService.memberState == 1) {
       this.couponService.getCoupons().subscribe(coupons => {
         if (coupons) {
           this.handleCouponsCount(coupons);
@@ -420,6 +422,19 @@ export class MyApp {
       }, err => {
         console.log('getCoupons Err:', err);
 
+      });
+    } else {
+      this.storage.get('jcr.user').then(member => {
+        if (member) {
+          this.couponService.getCoupons().subscribe(coupons => {
+            if (coupons) {
+              this.handleCouponsCount(coupons);
+            }
+          }, err => {
+            console.log(err);
+            
+          });
+        }
       });
     }
   }
@@ -431,10 +446,7 @@ export class MyApp {
         if (!coupon.extra) {
           this.couponConut = 0;
           this.events.publish('couponCount_fromApp', this.couponConut);
-          return;
-        }
-
-        if (coupon.extra.CouponStatus == 'A') {
+        } else if (coupon.extra.CouponStatus == 'A') {
           tmpCoupon.push(coupon);
         }
       });
@@ -483,8 +495,191 @@ export class MyApp {
     });
   }
 
-  navTo(page: string) {
+  handleKeyboard() {
+    
+  }
 
+  handleOffset() {
+
+  }
+
+  navTo(page: string) {
+    let isHomeRoot = this.nav.getByIndex(0).name == 'homeScreenPage';
+    let isFirst = this.nav.getActive().isFirst();
+
+    let navToPage = (page: any, params?: any, opts?: NavOptions, done?: () => void) => {
+      this.nav.insert(1, page, params, opts, done);
+      if (!isFirst) {
+        this.nav.popTo(1, { direction: 'forward' });
+      }
+    }
+
+    switch (page) {
+      case 'main': {
+        this.menuCtrl.close();
+        break;
+      }
+
+      case 'message': {
+        navToPage(MessageListPage);
+        break;
+      }
+
+      case 'userdetail': {
+        if (this.userService.memberState == 2) {
+          this.showAlertsTotalCard();
+        } else if (this.userService.memberState == 1) {
+          navToPage(MemberUserDetailPage);
+        } else {
+          let loginModalPage = this.modalCtrl.create(LoginPage);
+          loginModalPage.onDidDismiss(loginState => {
+            if (loginState == 'toHome') {
+              this.menuCtrl.close();
+              return;
+            }
+            if (loginState) {
+              navToPage(MemberUserDetailPage);
+            }
+          });
+        }
+        break;
+      }
+
+
+      case 'queuing': {
+        let gotoQueuing = () => {
+          if (!this.pendingListTicket) {
+            this.pendingListTicket = true;
+            this.queuingService.listUserTicket().subscribe(tickets => {
+              if (tickets.length > 0) {
+                navToPage(QueuingShowTicketPage, {
+                  'id': tickets[0].id
+                }, null, () => {
+                  this.pendingListTicket = false;
+                });
+              } else {
+                navToPage(QueuingListPage, {
+                  'fromMenu': true
+                }, null, () => {
+                  this.pendingListTicket = false;
+                });
+              }
+            }, err => {
+              console.log(err);
+              this.pendingListTicket = false;
+            });
+          } else {
+            this.toastController.create({
+              message: this.translateService.instant('app.getTicketing'),
+              duration: 1000,
+              position: 'middle',
+            }).present();
+          }
+        }
+        if (this.userService.memberState == 2) {
+          this.showAlertsTotalCard();
+        } else if (this.userService.memberState == 1) {
+          gotoQueuing();
+        } else {
+          let loginModalPage = this.modalCtrl.create(LoginPage);
+          loginModalPage.onDidDismiss(loginState => {
+            if (loginState == 'toHome') {
+              this.menuCtrl.close();
+            } else if (loginState) {
+              gotoQueuing();
+            }
+          });
+          loginModalPage.present();
+        }
+        break;
+      }
+
+      case "coupon":
+        if (this.userService.memberState == 2) {
+          this.showAlertsTotalCard();
+        } else if (this.userService.memberState == 1) {
+          navToPage(CouponPage);
+        }
+        else {
+          let loginModalPage = this.modalCtrl.create(LoginPage);
+          loginModalPage.onDidDismiss(loginState => {
+            console.log("loginState:", loginState);
+
+            if (loginState == "toHome") {
+              this.menuCtrl.close();
+              return;
+            }
+            if (loginState) {
+              // this.nav.setPages([this.rootPage, CouponPage]);
+              navToPage(CouponPage);
+            }
+          });
+          loginModalPage.present();
+        }
+        break;
+
+      case "news":
+        navToPage(PromotionListPage);
+        break;
+
+      case "store":
+        navToPage(StoreListPage);
+        break;
+
+      case "settings":
+        navToPage(SettingsPage);
+        break;
+
+      case 'permember': {
+        if (this.userService.memberState == 1) {
+          this.showAlertsMember();
+        } else if (this.userService.memberState == 2) {
+          navToPage(PreMemberHomePage);
+        } else {
+          navToPage(PreMemberIntroPage);
+        }
+      }
+
+      default:
+        break;
+    }
+  }
+
+  showAlertsTotalCard() {
+    this.alertCtrl.create({
+      message: this.translateService.instant('pages.homeScreen.isGenkiMember'),
+      buttons: [
+        {
+          text: this.translateService.instant('pages.homeScreen.cancel'),
+          role: 'cancel',
+        },
+        {
+          text: this.translateService.instant('pages.homeScreen.logoutCard'),
+          handler: () => {
+            this.userService.logoutPreMember();
+          }
+        }
+      ],
+    }).setCssClass('PrememberAlert_UpperAndLowerDisplay').present();
+  }
+
+  showAlertsMember() {
+    this.alertCtrl.create({
+      message: this.translateService.instant('pages.homeScreen.isPreMember'),
+      buttons: [
+        {
+          text: this.translateService.instant('pages.homeScreen.cancel'),
+          role: 'cancel',
+        },
+        {
+          text: this.translateService.instant('pages.homeScreen.logoutMember'),
+          handler: () => {
+            this.userService.logoutUser();
+            this.navTo("premember");
+          }
+        }
+      ],
+    }).setCssClass('PrememberAlert_UpperAndLowerDisplay').present();
   }
 
   inappbrowser(webName: string, title: string, transitionStyle: string) {
