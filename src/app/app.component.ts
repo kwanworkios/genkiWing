@@ -1,3 +1,4 @@
+import { ThemeableBrowser } from '@ionic-native/themeable-browser';
 import { InboxMessageService } from './../services/inboxMessage.service';
 import { TermConditionsPage } from '../pages/term-conditions/term-conditions';
 import { Observable } from 'rxjs';
@@ -353,7 +354,7 @@ export class MyApp {
       if (this.userLoginState) {
         this.storage.ready().then(() => {
           this.storage.get('languageMode').then(lang => {
-            if(lang) {
+            if (lang) {
               this.getPersonalAddLang(unreadPersonalMessages, unreadMessages, lang);
             } else {
               this.getPersonalAddLang(unreadPersonalMessages, unreadMessages, null);
@@ -377,7 +378,7 @@ export class MyApp {
       if (personalNotices.length > 0) {
         let Ptmp = 0;
         personalNotices.forEach(personalNotice => {
-          if(personalNotice.ReadStatus == 'U') {
+          if (personalNotice.ReadStatus == 'U') {
             Ptmp++;
           }
         });
@@ -385,25 +386,25 @@ export class MyApp {
       }
       this.messageCount = Number(unreadMsg) + Number(unreadPersonalMsg);
       this.handleBadge(this.messageCount);
-  
+
       this.events.publish('requestMessageSuccess_MessageConut_fromApp', this.messageCount);
     }, err => {
       this.messageCount = unreadMsg
       this.handleBadge(this.messageCount);
       this.events.publish('requestMessageSuccess_MessageConut_fromApp', this.messageCount);
     });
-   
+
   }
 
   handleBadge(messageCount: number) {
-    if(messageCount > 0) {
+    if (messageCount > 0) {
       this.badge.get().then(number => {
         if (number != messageCount) {
           this.badge.set(messageCount);
         }
       }, err => {
         console.log('handleBadgeErr:', err);
-        
+
       });
     } else {
       this.badge.clear();
@@ -412,13 +413,13 @@ export class MyApp {
 
   requestCoupon() {
     if (this.userService.memberState === 1) {
-      this.couponService.getCoupons().subscribe( coupons => {
+      this.couponService.getCoupons().subscribe(coupons => {
         if (coupons) {
           this.handleCouponsCount(coupons);
         }
       }, err => {
         console.log('getCoupons Err:', err);
-        
+
       });
     }
   }
@@ -426,14 +427,14 @@ export class MyApp {
   handleCouponsCount(coupon: Coupon[]) {
     if (coupon.length > 0) {
       let tmpCoupon = [];
-      coupon.forEach( coupon => {
-        if(!coupon.extra) {
+      coupon.forEach(coupon => {
+        if (!coupon.extra) {
           this.couponConut = 0;
           this.events.publish('couponCount_fromApp', this.couponConut);
           return;
         }
 
-        if(coupon.extra.CouponStatus == 'A') {
+        if (coupon.extra.CouponStatus == 'A') {
           tmpCoupon.push(coupon);
         }
       });
@@ -487,11 +488,74 @@ export class MyApp {
   }
 
   inappbrowser(webName: string, title: string, transitionStyle: string) {
-    
+    var url;
+    var titleName = this.translateService.instant(title);
+    if (webName == 'menu') {
+      url = this.webMenu;
+    }
+
+    this.themeableBrowserService.createThemeableBrowser(url, '_blank');
   }
 
-  external_inappbrowser() {
+  external_inappbrowser(webName: string, title: string, transitionStyle: string) {
+    var url: string;
+    let urlObject: URL;
+    var titleName = this.translateService.instant(title);
 
+    if (webName == 'takeOut') {
+      url = this.webTakeOut;
+      urlObject = new URL(this.webTakeOut);
+      let sid = this.configService.getSessionId();
+      if (this.userService.memberState == 1) {
+
+        if (!!urlObject.searchParams) {
+          urlObject.searchParams.set('app', sid);
+          url = urlObject.toString();
+        } else {
+
+          if (url.indexOf('?') > -1) {
+            if (url.indexOf('app=') == -1) {
+              url = url + '&app=' + encodeURIComponent(sid);
+            }
+
+          } else {
+            url = url + '?app=' + encodeURIComponent(sid);
+          }
+
+        }
+
+      } else {
+
+        if (!!urlObject.searchParams) {
+          urlObject.searchParams.set('type', 'guest');
+          url = urlObject.toString();
+        } else {
+
+          if (url.indexOf('?') > -1) {
+
+            if (url.indexOf('&type=') == -1) {
+              url += '&type=guest';
+            }
+          } else {
+            url += '?type=guest';
+          }
+
+        }
+      }
+
+      this.themeableBrowserService.settingValue(titleName, null, null, null, transitionStyle);
+    }
+
+    this.themeableBrowserService.settingValue(titleName, null, null, null, transitionStyle);
+
+    try {
+      (<any>window).cordova.ThemeableBrowser.setJSInterface("NotSetJSInterface", "NotSetJSInterface");
+    } catch (error) {
+      console.log(error);
+
+    }
+
+    this.themeableBrowserService.createThemeableBrowser(url, '_system');
   }
 
   loading(show) {
