@@ -23,6 +23,8 @@ import { ThemeableBrowserService } from '../services/themeableBrowser.service';
 import { Startup } from '../data/startup';
 import { UserService } from '../services/user.service';
 import { Badge } from '@ionic-native/badge';
+import { CouponService } from '../services/coupon.service';
+import { Coupon } from '../data/coupon';
 
 @Component({
   templateUrl: 'app.html'
@@ -39,8 +41,9 @@ export class MyApp {
   isUpdateAlertShowing: boolean;
   userLoginState = false;
   messageCount: number = 0;
+  couponConut = 0;
 
-  constructor(public inject: Injector, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public storage: Storage, public translateService: TranslateService, public configService: ConfigService, public events: Events, public hockeyapp: HockeyApp, public deeplinks: Deeplinks, public navController: NavController, public loadingController: LoadingController, public startupService: StartupService, public appVersion: AppVersion, public alertCtrl: AlertController, public themeableBrowserService: ThemeableBrowserService, public modalCtrl: ModalController, public inboxMessageService: InboxMessageService, public userService: UserService, public badge: Badge) {
+  constructor(public inject: Injector, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public storage: Storage, public translateService: TranslateService, public configService: ConfigService, public events: Events, public hockeyapp: HockeyApp, public deeplinks: Deeplinks, public navController: NavController, public loadingController: LoadingController, public startupService: StartupService, public appVersion: AppVersion, public alertCtrl: AlertController, public themeableBrowserService: ThemeableBrowserService, public modalCtrl: ModalController, public inboxMessageService: InboxMessageService, public userService: UserService, public badge: Badge, public couponService: CouponService) {
     this.initializeApp();
 
   }
@@ -408,7 +411,35 @@ export class MyApp {
   }
 
   requestCoupon() {
+    if (this.userService.memberState === 1) {
+      this.couponService.getCoupons().subscribe( coupons => {
+        if (coupons) {
+          this.handleCouponsCount(coupons);
+        }
+      }, err => {
+        console.log('getCoupons Err:', err);
+        
+      });
+    }
+  }
 
+  handleCouponsCount(coupon: Coupon[]) {
+    if (coupon.length > 0) {
+      let tmpCoupon = [];
+      coupon.forEach( coupon => {
+        if(!coupon.extra) {
+          this.couponConut = 0;
+          this.events.publish('couponCount_fromApp', this.couponConut);
+          return;
+        }
+
+        if(coupon.extra.CouponStatus == 'A') {
+          tmpCoupon.push(coupon);
+        }
+      });
+      this.couponConut = tmpCoupon.length;
+    }
+    this.events.publish('couponConut_fromApp', this.couponConut);
   }
 
   showAlert(title: string = null, message: string, buttons: any = [this.translateService.instant('app.alertButtonOK')]) {
@@ -449,6 +480,18 @@ export class MyApp {
       this.translateService.setDefaultLang(userLang);
       GoogleMapsLoader.loadGoogleMapScript(userLang);
     });
+  }
+
+  navTo(page: string) {
+
+  }
+
+  inappbrowser(webName: string, title: string, transitionStyle: string) {
+    
+  }
+
+  external_inappbrowser() {
+
   }
 
   loading(show) {
