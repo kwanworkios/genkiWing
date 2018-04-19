@@ -1,3 +1,11 @@
+import { StoreListPage } from './../pages/store-list/store-list';
+import { QueuingShowTicketPage } from './../pages/queuing-show-ticket/queuing-show-ticket';
+import { QueuingListPage } from './../pages/queuing-list/queuing-list';
+import { PromotionListPage } from './../pages/promotion-list/promotion-list';
+import { PreMemberHomePage } from './../pages/pre-member-home/pre-member-home';
+import { MemberUserDetailPage } from './../pages/member-user-detail/member-user-detail';
+import { LoginPage } from './../pages/login/login';
+import { CouponPage } from './../pages/coupon/coupon';
 import { TermConditionsPage } from './../pages/term-conditions/term-conditions';
 import { FlurryAnalytics } from '@ionic-native/flurry-analytics';
 import { Badge } from '@ionic-native/badge';
@@ -34,6 +42,8 @@ import { InboxMessageService } from '../services/inboxMessage.service';
 import { UserService } from '../services/user.service';
 import { CouponService } from '../services/coupon.service';
 import { QueuingService } from '../services/queuing.service';
+import { MessageListPage } from '../pages/message-list/message-list';
+import { SettingsPage } from '../pages/settings/settings';
 
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -44,6 +54,16 @@ export function createTranslateLoader(http: Http) {
     MyApp,
     HomePage,
     TermConditionsPage,
+    MessageListPage,
+    CouponPage,
+    LoginPage,
+    MemberUserDetailPage,
+    PreMemberHomePage,
+    PromotionListPage,
+    QueuingListPage,
+    QueuingShowTicketPage,
+    SettingsPage,
+    StoreListPage,
   ],
   imports: [
     TranslateModule.forRoot({
@@ -75,6 +95,16 @@ export function createTranslateLoader(http: Http) {
     MyApp,
     HomePage,
     TermConditionsPage,
+    MessageListPage,
+    CouponPage,
+    LoginPage,
+    MemberUserDetailPage,
+    PreMemberHomePage,
+    PromotionListPage,
+    QueuingListPage,
+    QueuingShowTicketPage,
+    SettingsPage,
+    StoreListPage,
   ],
   providers: [
     Badge,
@@ -103,7 +133,7 @@ export function createTranslateLoader(http: Http) {
     FlurryAnalytics,
     CouponService,
     QueuingService,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
-export class AppModule {}
+export class AppModule { }

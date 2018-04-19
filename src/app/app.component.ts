@@ -25,6 +25,17 @@ import { Badge } from '@ionic-native/badge';
 import { CouponService } from '../services/coupon.service';
 import { Coupon } from '../data/coupon';
 import { QueuingService } from '../services/queuing.service';
+import { MessageListPage } from '../pages/message-list/message-list';
+import { MemberUserDetailPage } from '../pages/member-user-detail/member-user-detail';
+import { LoginPage } from '../pages/login/login';
+import { QueuingListPage } from '../pages/queuing-list/queuing-list';
+import { QueuingShowTicketPage } from '../pages/queuing-show-ticket/queuing-show-ticket';
+import { CouponPage } from '../pages/coupon/coupon';
+import { PromotionListPage } from '../pages/promotion-list/promotion-list';
+import { StoreListPage } from '../pages/store-list/store-list';
+import { PreMemberHomePage } from '../pages/pre-member-home/pre-member-home';
+import { SettingsPage } from '../pages/settings/settings';
+import { PreMemberIntroPage } from '../pages/pre-member-intro/pre-member-intro';
 
 @Component({
   templateUrl: 'app.html'
