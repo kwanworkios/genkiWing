@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { BasePage } from './../../framework/base/base-page';
+import { Component, Injector } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
 /**
@@ -12,9 +13,10 @@ import { NavController, NavParams } from 'ionic-angular';
   selector: 'page-queuing-show-ticket',
   templateUrl: 'queuing-show-ticket.html',
 })
-export class QueuingShowTicketPage {
+export class QueuingShowTicketPage extends BasePage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(private injector: Injector, public navCtrl: NavController, public navParams: NavParams) {
+    super(injector);
   }
 
   ionViewDidLoad() {

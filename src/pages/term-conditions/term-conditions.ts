@@ -25,13 +25,13 @@ export class TermConditionsPage extends BasePage {
   isAgree: boolean = false;
 
   @ViewChild('modalBody') modalBody: ElementRef;
-  constructor(private injector: Injector, public storage: Storage, public startUpService: StartupService, public viewController: ViewController) {
+  constructor(private injector: Injector, public storage: Storage, public startUpService: StartupService, public viewController: ViewController, params: NavParams, ) {
     super(injector);
-    let canCancel = this.navParams.get('canCancel');
+    let canCancel = params.get('canCancel');
     if (canCancel) {
       this.canCancelMode = canCancel;
     }
-    let isCancel = this.navParams.get('isCancelButton');
+    let isCancel = params.get('isCancelButton');
     if (isCancel) {
       this.isCancel = isCancel;
     }
@@ -82,7 +82,7 @@ export class TermConditionsPage extends BasePage {
   }
 
   check() {
-    if(this.isOffline == false) {
+    if (this.isOffline == false) {
       this.agreeTerms = !this.agreeTerms;
     }
   }
@@ -95,9 +95,9 @@ export class TermConditionsPage extends BasePage {
     };
     this.viewController.dismiss(dismissData);
   }
-  
+
   cancel() {
-    if(this.canCancelMode) {
+    if (this.canCancelMode) {
       this.viewController.dismiss();
     }
   }
@@ -108,9 +108,9 @@ export class TermConditionsPage extends BasePage {
 
   ionViewCanLeave(): boolean {
     let canLeave = false;
-    if(this.canCancelMode) {
+    if (this.canCancelMode) {
       canLeave = true;
-    } else if(this.agreeTerms && this.isAgree) {
+    } else if (this.agreeTerms && this.isAgree) {
       canLeave = true;
     }
     return canLeave;

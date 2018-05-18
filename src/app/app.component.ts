@@ -1,3 +1,4 @@
+import { Keyboard } from '@ionic-native/keyboard';
 import { ThemeableBrowser } from '@ionic-native/themeable-browser';
 import { InboxMessageService } from './../services/inboxMessage.service';
 import { TermConditionsPage } from '../pages/term-conditions/term-conditions';
@@ -10,7 +11,6 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
 import { GoogleMapsLoader } from '../services/map-loader.service';
 import { BasePage } from '../framework/base/base-page';
 import { ConfigService } from '../framework/services/config.service';
@@ -53,18 +53,26 @@ export class MyApp {
   userLoginState = false;
   messageCount: number = 0;
   couponConut = 0;
-  pendingListTicket: boolean = false;;
+  pendingListTicket: boolean = false;
+  isOther: boolean = false;
+  isIphoneX: boolean = false;
 
-  constructor(public inject: Injector, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public storage: Storage, public translateService: TranslateService, public configService: ConfigService, public events: Events, public hockeyapp: HockeyApp, public deeplinks: Deeplinks, public navController: NavController, public loadingController: LoadingController, public startupService: StartupService, public appVersion: AppVersion, public alertCtrl: AlertController, public themeableBrowserService: ThemeableBrowserService, public modalCtrl: ModalController, public inboxMessageService: InboxMessageService, public userService: UserService, public badge: Badge, public couponService: CouponService, public menuCtrl: MenuController, public queuingService: QueuingService, public toastController: ToastController) {
+  constructor(public inject: Injector, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public storage: Storage, public translateService: TranslateService, public configService: ConfigService, public events: Events, public hockeyapp: HockeyApp, public deeplinks: Deeplinks, public loadingController: LoadingController, public startupService: StartupService, public appVersion: AppVersion, public alertCtrl: AlertController, public themeableBrowserService: ThemeableBrowserService, public modalCtrl: ModalController, public inboxMessageService: InboxMessageService, public userService: UserService, public badge: Badge, public couponService: CouponService, public menuCtrl: MenuController, public queuingService: QueuingService, public toastController: ToastController, public keyboard: Keyboard) {
     this.initializeApp();
 
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
-      this.initHockeyApp();
+      // this.initHockeyApp();
       this.statusBar.styleDefault();
       this.statusBar.show();
+      if (this.platform.is('ios')) {
+        this.statusBar.backgroundColorByHexString('#FFC933');
+      }
+      if (this.platform.is('android')) {
+        this.statusBar.backgroundColorByHexString('#c89900');
+      }
       this.setDeepLinks();
       this.hideSplash();
       this.handleEvents();
@@ -93,7 +101,7 @@ export class MyApp {
   }
 
   setDeepLinks() {
-    this.deeplinks.routeWithNavController(this.navController, {
+    this.deeplinks.routeWithNavController(this.nav, {
       // '/settings': SettingsPage,
     }).subscribe((match) => {
       // match.$route - the route we matched, which is the matched entry from the arguments to route()
@@ -124,19 +132,20 @@ export class MyApp {
     });
 
     this.events.subscribe("gotoPreMember", () => {
-
+      this.nav.push(PreMemberIntroPage);
     });
 
     this.events.subscribe("changeLanguage", (startup) => {
-
+      this.startup = startup;
+      this.webLinks();
     });
 
     this.events.subscribe("requestCouponSuccess_couponCount", (couponCount) => {
-
+      this.couponConut = couponCount;
     });
 
     this.events.subscribe("requestMessageSuccess_MessageCount", (MessageCount) => {
-
+      this.messageCount = MessageCount;
     });
   }
 
@@ -443,7 +452,7 @@ export class MyApp {
             }
           }, err => {
             console.log(err);
-            
+
           });
         }
       });
@@ -507,11 +516,30 @@ export class MyApp {
   }
 
   handleKeyboard() {
-    
+    if (this.platform.is('ios')) {
+      let appEl = <HTMLElement>(document.getElementsByTagName('ION-APP')[0]), appElHeight = appEl.clientHeight;
+
+      this.keyboard.disableScroll(true);
+
+      window.addEventListener('native.keyboardshow', e => {
+        appEl.style.height = (appElHeight - (<any>e).keyboardHeight + 'px');
+      });
+
+      window.addEventListener('native.keyboardhide', () => {
+        appEl.style.height = '100%';
+      });
+    }
   }
 
   handleOffset() {
-
+    if (this.platform.is('ios')) {
+      let height = this.platform.height();
+      if (height < 812) {
+        this.isOther = true;
+      } else {
+        this.isIphoneX = true;
+      }
+    }
   }
 
   navTo(page: string) {

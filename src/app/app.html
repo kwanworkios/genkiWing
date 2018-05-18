@@ -1,4 +1,4 @@
-<ion-menu [content]="rootContent" type="overlay" id="rootMenu">
+<ion-menu [content]="rootContent" type="overlay" id="rootMenu" [ngClass]="{hasOffetTop:isOther, iphonexOffetTop: isIphoneX}">
   <ion-content #content>
     <ion-list class="menu-wrapper">
       <button ion-item (click)="navTo('main')">

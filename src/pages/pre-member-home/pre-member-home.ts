@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { BasePage } from './../../framework/base/base-page';
+import { Component, Injector } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
 /**
@@ -12,9 +13,10 @@ import { NavController, NavParams } from 'ionic-angular';
   selector: 'page-pre-member-home',
   templateUrl: 'pre-member-home.html',
 })
-export class PreMemberHomePage {
+export class PreMemberHomePage extends BasePage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(private injector: Injector, public navCtrl: NavController, public navParams: NavParams) {
+    super(injector);
   }
 
   ionViewDidLoad() {
