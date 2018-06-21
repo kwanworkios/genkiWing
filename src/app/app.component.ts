@@ -1,3 +1,4 @@
+import { Firebase } from '@ionic-native/firebase';
 import { Keyboard } from '@ionic-native/keyboard';
 import { ThemeableBrowser } from '@ionic-native/themeable-browser';
 import { InboxMessageService } from './../services/inboxMessage.service';
@@ -5,7 +6,7 @@ import { TermConditionsPage } from '../pages/term-conditions/term-conditions';
 import { Observable } from 'rxjs';
 import { VersionChecker } from './../framework/utilities/version-checker';
 import { Component, ViewChild, Injector } from '@angular/core';
-import { Nav, Platform, NavController, Loading, LoadingController, AlertController, ModalController, Events, NavOptions, MenuController, ToastController } from 'ionic-angular';
+import { Nav, Platform, NavController, Loading, LoadingController, AlertController, ModalController, Events, NavOptions, MenuController, ToastController, Alert } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Storage } from '@ionic/storage';
@@ -36,6 +37,7 @@ import { StoreListPage } from '../pages/store-list/store-list';
 import { PreMemberHomePage } from '../pages/pre-member-home/pre-member-home';
 import { SettingsPage } from '../pages/settings/settings';
 import { PreMemberIntroPage } from '../pages/pre-member-intro/pre-member-intro';
+import { PopupBannerPage } from '../pages/popup-banner/popup-banner';
 
 @Component({
   templateUrl: 'app.html'
@@ -57,7 +59,8 @@ export class MyApp {
   isOther: boolean = false;
   isIphoneX: boolean = false;
 
-  constructor(public inject: Injector, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public storage: Storage, public translateService: TranslateService, public configService: ConfigService, public events: Events, public hockeyapp: HockeyApp, public deeplinks: Deeplinks, public loadingController: LoadingController, public startupService: StartupService, public appVersion: AppVersion, public alertCtrl: AlertController, public themeableBrowserService: ThemeableBrowserService, public modalCtrl: ModalController, public inboxMessageService: InboxMessageService, public userService: UserService, public badge: Badge, public couponService: CouponService, public menuCtrl: MenuController, public queuingService: QueuingService, public toastController: ToastController, public keyboard: Keyboard) {
+
+  constructor(public inject: Injector, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public storage: Storage, public translateService: TranslateService, public configService: ConfigService, public events: Events, public hockeyapp: HockeyApp, public deeplinks: Deeplinks, public loadingController: LoadingController, public startupService: StartupService, public appVersion: AppVersion, public alertCtrl: AlertController, public themeableBrowserService: ThemeableBrowserService, public modalCtrl: ModalController, public inboxMessageService: InboxMessageService, public userService: UserService, public badge: Badge, public couponService: CouponService, public menuCtrl: MenuController, public queuingService: QueuingService, public toastController: ToastController, public keyboard: Keyboard, public firebase: Firebase, public navCtrl: NavController) {
     this.initializeApp();
 
   }
@@ -279,8 +282,19 @@ export class MyApp {
       }
     }
     if (tmpAd) {
+      this.showPopupBannerAd();
+    }
+
+    if (!tmpAd) {
       this.events.publish('PopupBannerPage.onDidDismiss');
     }
+  }
+
+  showPopupBannerAd() {
+    let popup = this.modalCtrl.create(PopupBannerPage);
+    popup.onDidDismiss((id) => {
+      
+    });
   }
 
   showTermsModal(err?: any) {
@@ -528,6 +542,8 @@ export class MyApp {
       window.addEventListener('native.keyboardhide', () => {
         appEl.style.height = '100%';
       });
+
+      this.keyboard.hideKeyboardAccessoryBar(false);
     }
   }
 
@@ -541,6 +557,7 @@ export class MyApp {
       }
     }
   }
+
 
   navTo(page: string) {
     let isHomeRoot = this.nav.getByIndex(0).name == 'homeScreenPage';

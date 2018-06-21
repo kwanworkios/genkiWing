@@ -1,3 +1,4 @@
+import { PopupBannerPage } from './../pages/popup-banner/popup-banner';
 import { StoreListPage } from './../pages/store-list/store-list';
 import { QueuingShowTicketPage } from './../pages/queuing-show-ticket/queuing-show-ticket';
 import { QueuingListPage } from './../pages/queuing-list/queuing-list';
@@ -64,6 +65,7 @@ export function createTranslateLoader(http: Http) {
     QueuingShowTicketPage,
     SettingsPage,
     StoreListPage,
+    PopupBannerPage
   ],
   imports: [
     TranslateModule.forRoot({
@@ -105,6 +107,7 @@ export function createTranslateLoader(http: Http) {
     QueuingShowTicketPage,
     SettingsPage,
     StoreListPage,
+    PopupBannerPage
   ],
   providers: [
     Badge,

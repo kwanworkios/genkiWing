@@ -1,4 +1,5 @@
-<ion-menu [content]="rootContent" type="overlay" id="rootMenu" [ngClass]="{hasOffetTop:isOther, iphonexOffetTop: isIphoneX}">
+<ion-menu [content]="rootContent" type="overlay" (ionClose)="isClosed()" (ionOpen)="isOpened()" (ionDrag)="isDrag()" id="rootMenu"
+  [ngClass]="{hasOffetTop:isOther, iphonexOffetTop: isIphoneX}">
   <ion-content #content>
     <ion-list class="menu-wrapper">
       <button ion-item (click)="navTo('main')">
